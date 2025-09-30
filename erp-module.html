@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ERP Module — Inventory Mockup</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#0077b6;
+      --secondary:#00b4d8;
+      --bg:#f7fbfc;
+      --card:#fff;
+      --muted:#6b7280;
+      --radius:10px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#0f1724;background:var(--bg);margin:0;padding:26px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+    header h1{margin:0;font-size:1.2rem;color:var(--primary)}
+    a.btn{
+      background:var(--primary);color:white;padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:600;
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .container{max-width:1100px;margin:0 auto}
+    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.06);}
+
+    /* controls */
+    .controls{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 20px}
+    .controls .search{flex:1;min-width:220px}
+    input[type="text"], input[type="number"], select {
+      width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff
+    }
+    button.primary{background:var(--primary);color:#fff;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid #e6e9ef;padding:10px 12px;border-radius:8px;cursor:pointer}
+
+    /* table */
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    thead th{background:#f1f6f9;padding:12px;text-align:left;color:#0b1220;font-weight:600}
+    tbody td{padding:12px;border-bottom:1px solid #f1f4f6}
+    .muted{color:var(--muted);font-size:0.95rem}
+
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-top:16px}
+    @media (max-width:920px){.grid{grid-template-columns:1fr}}
+
+    /* item card on right */
+    .item-details h3{margin:0 0 8px}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .kpi .k{background:#f1f6f9;padding:10px;border-radius:8px;min-width:120px;text-align:center}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center}
+    .modal{background:var(--card);padding:18px;border-radius:12px;max-width:520px;width:96%}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+    @media (max-width:520px){.form-row{grid-template-columns:1fr}}
+
+    .actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+
+    .small{font-size:0.9rem;color:var(--muted)}
+
+    .table-actions button{margin-right:6px}
+    .table-actions button.edit{background:#fffaeb;border:1px solid #ffe8a1;color:#b45b00;padding:6px 8px;border-radius:8px}
+    .table-actions button.del{background:#fff5f5;border:1px solid #ffc7c7;color:#b92a2a;padding:6px 8px;border-radius:8px}
+
+    .pager{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .page-btn{padding:6px 10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ERP — Inventory Module (Mock-up)</h1>
+      <div>
+        <a href="index.html" class="btn">← Back to site</a>
+      </div>
+    </header>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>Inventory Items</strong>
+          <div class="small">Manage products, track stock and export inventory data</div>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="exportCsv" class="primary">Export CSV</button>
+          <button id="seedData" class="ghost">Load sample data</button>
+          <button id="openAdd" class="primary">+ Add Item</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="search" class="search" type="text" placeholder="Search items by name or SKU...">
+        <select id="filterCategory" style="width:200px">
+          <option value="">All categories</option>
+          <option>Hardware</option>
+          <option>Software</option>
+          <option>Services</option>
+        </select>
+        <select id="sortBy" style="width:200px">
+          <option value="name">Sort: Name (A→Z)</option>
+          <option value="qty_desc">Sort: Quantity (High→Low)</option>
+          <option value="qty_asc">Sort: Quantity (Low→High)</option>
+          <option value="date_desc">Sort: Newest</option>
+        </select>
+      </div>
+
+      <div class="grid">
+        <!-- left: table -->
+        <div>
+          <div id="tableArea"></div>
+          <div class="pager" id="pagerArea"></div>
+        </div>
+
+        <!-- right: details -->
+        <aside class="card item-details">
+          <h3>Item Overview</h3>
+          <div id="selectedInfo"><div class="small">Select an item from the table to see details here.</div></div>
+
+          <div class="kpi">
+            <div class="k">
+              <div class="small">Total Items</div>
+              <div id="k_total">0</div>
+            </div>
+            <div class="k">
+              <div class="small">Total Stock</div>
+              <div id="k_stock">0</div>
+            </div>
+            <div class="k">
+              <div class="small">Categories</div>
+              <div id="k_cat">0</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal for add/edit -->
+  <div id="modalBackdrop" class="modal-backdrop" >
+    <div class="modal card">
+      <h3 id="modalTitle">Add Item</h3>
+
+      <div style="margin-top:8px">
+        <label class="small">Name</label>
+        <input id="i_name" type="text" placeholder="Product name">
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="small">SKU</label>
+          <input id="i_sku" type="text" placeholder="e.g. SKU-001">
+        </div>
+        <div>
+          <label class="small">Category</label>
+          <input id="i_category" type="text" placeholder="e.g. Hardware">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="small">Quantity</label>
+          <input id="i_qty" type="number" min="0" placeholder="0">
+        </div>
+        <div>
+          <label class="small">Unit Price (ZAR)</label>
+          <input id="i_price" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <label class="small">Notes</label>
+        <input id="i_notes" type="text" placeholder="Optional notes...">
+      </div>
+
+      <div class="actions">
+        <button id="modalCancel" class="ghost">Cancel</button>
+        <button id="modalSave" class="primary">Save Item</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* Simple client-only ERP inventory mock-up */
+const STORAGE_KEY = 'erp_inventory_v1';
+let items = [];
+let selectedId = null;
+let page = 1;
+const pageSize = 6;
+
+function uid(){
+  return 'id_' + Math.random().toString(36).slice(2,9);
+}
+
+function load(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  items = raw ? JSON.parse(raw) : [];
+  render();
+}
+
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  render();
+}
+
+function seedSample(){
+  items = [
+    {id:uid(), name:"Laptop - Dell Latitude", sku:"HW-001", category:"Hardware", qty:12, price:18999.00, notes:"For staff use", created: Date.now()},
+    {id:uid(), name:"MS Office Licenses (10)", sku:"SW-101", category:"Software", qty:10, price:7999.00, notes:"Annual sub", created: Date.now()-86400000},
+    {id:uid(), name:"Router - Cisco", sku:"HW-021", category:"Hardware", qty:6, price:4500.50, notes:"Network", created: Date.now()-2000000},
+    {id:uid(), name:"Azure DevOps Pipeline", sku:"SV-301", category:"Services", qty:1, price:0.00, notes:"CI/CD", created: Date.now()-12000000},
+    {id:uid(), name:"External HDD 1TB", sku:"HW-007", category:"Hardware", qty:24, price:899.99, notes:"Backup drives", created: Date.now()-32000000},
+    {id:uid(), name:"Antivirus Licenses", sku:"SW-202", category:"Software", qty:50, price:99.99, notes:"Annual", created: Date.now()-7200000},
+    {id:uid(), name:"Printer Toner", sku:"HW-091", category:"Hardware", qty:36, price:299.00, notes:"A3 printer", created: Date.now()-6400000},
+  ];
+  save();
+}
+
+function formatZAR(n){ return new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(n); }
+
+function render(){
+  // filters and pagination
+  const search = document.getElementById('search').value.trim().toLowerCase();
+  const categoryFilter = document.getElementById('filterCategory').value;
+  const sortBy = document.getElementById('sortBy').value;
+
+  let filtered = items.filter(it => {
+    const t = (it.name + ' ' + it.sku + ' ' + (it.category||'')).toLowerCase();
+    if(search && !t.includes(search)) return false;
+    if(categoryFilter && it.category !== categoryFilter) return false;
+    return true;
+  });
+
+  if(sortBy === 'qty_desc') filtered.sort((a,b)=>b.qty - a.qty);
+  else if(sortBy === 'qty_asc') filtered.sort((a,b)=>a.qty - b.qty);
+  else if(sortBy === 'date_desc') filtered.sort((a,b)=>b.created - a.created);
+  else filtered.sort((a,b)=>a.name.localeCompare(b.name));
+
+  // pagination
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  if(page > totalPages) page = totalPages;
+  const start = (page-1)*pageSize;
+  const pageItems = filtered.slice(start, start + pageSize);
+
+  // table
+  const tableArea = document.getElementById('tableArea');
+  if(pageItems.length === 0){
+    tableArea.innerHTML = '<div class="card small">No items found. Add items or load sample data.</div>';
+  } else {
+    let html = '<table><thead><tr><th>Item</th><th>SKU</th><th>Category</th><th>Qty</th><th>Unit Price</th><th></th></tr></thead><tbody>';
+    for(const it of pageItems){
+      html += `<tr>
+        <td><strong>${escapeHTML(it.name)}</strong><div class="small">${escapeHTML(it.notes||'')}</div></td>
+        <td>${escapeHTML(it.sku)}</td>
+        <td>${escapeHTML(it.category||'—')}</td>
+        <td>${it.qty}</td>
+        <td>${formatZAR(Number(it.price)||0)}</td>
+        <td class="table-actions">
+          <button class="edit" onclick="openEdit('${it.id}')">Edit</button>
+          <button class="del" onclick="delItem('${it.id}')">Delete</button>
+          <button class="ghost" onclick="selectItem('${it.id}')">View</button>
+        </td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    tableArea.innerHTML = html;
+  }
+
+  // pager
+  const pagerArea = document.getElementById('pagerArea');
+  let pagerHtml = '';
+  if(totalPages > 1){
+    pagerHtml += `<button class="page-btn" ${page===1?'disabled':''} onclick="gotoPage(1)">«</button>`;
+    pagerHtml += `<button class="page-btn" ${page===1?'disabled':''} onclick="gotoPage(${page-1})">‹</button>`;
+    pagerHtml += `<div class="small">Page ${page} of ${totalPages}</div>`;
+    pagerHtml += `<button class="page-btn" ${page===totalPages?'disabled':''} onclick="gotoPage(${page+1})">›</button>`;
+    pagerHtml += `<button class="page-btn" ${page===totalPages?'disabled':''} onclick="gotoPage(${totalPages})">»</button>`;
+  }
+  pagerArea.innerHTML = pagerHtml;
+
+  // KPI right panel
+  document.getElementById('k_total').innerText = items.length;
+  document.getElementById('k_stock').innerText = items.reduce((s,i)=>s + Number(i.qty||0),0);
+  const cats = [...new Set(items.map(i=>i.category).filter(Boolean))].length;
+  document.getElementById('k_cat').innerText = cats;
+
+  // selected info
+  const selArea = document.getElementById('selectedInfo');
+  if(selectedId){
+    const s = items.find(x=>x.id === selectedId);
+    if(s){
+      selArea.innerHTML = `<div><strong>${escapeHTML(s.name)}</strong></div>
+        <div class="small">SKU: ${escapeHTML(s.sku)} / Category: ${escapeHTML(s.category||'—')}</div>
+        <div style="margin-top:10px">Qty: <strong>${s.qty}</strong></div>
+        <div>Unit Price: <strong>${formatZAR(Number(s.price)||0)}</strong></div>
+        <div style="margin-top:6px" class="small">Notes: ${escapeHTML(s.notes||'—')}</div>`;
+    } else {
+      selArea.innerHTML = '<div class="small">Selected item not found.</div>';
+      selectedId = null;
+    }
+  } else {
+    selArea.innerHTML = '<div class="small">Select an item from the table to see details here.</div>';
+  }
+}
+
+function gotoPage(p){ page = Math.max(1,p); render(); }
+
+function selectItem(id){ selectedId = id; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function openAdd(){
+  document.getElementById('modalTitle').innerText = 'Add Item';
+  document.getElementById('i_name').value = '';
+  document.getElementById('i_sku').value = '';
+  document.getElementById('i_category').value = '';
+  document.getElementById('i_qty').value = 0;
+  document.getElementById('i_price').value = 0;
+  document.getElementById('i_notes').value = '';
+  document.getElementById('modalBackdrop').style.display = 'flex';
+  document.getElementById('modalSave').dataset.editId = ''; // new
+}
+
+function openEdit(id){
+  const it = items.find(x=>x.id===id);
+  if(!it) return alert('Item not found');
+  document.getElementById('modalTitle').innerText = 'Edit Item';
+  document.getElementById('i_name').value = it.name;
+  document.getElementById('i_sku').value = it.sku;
+  document.getElementById('i_category').value = it.category;
+  document.getElementById('i_qty').value = it.qty;
+  document.getElementById('i_price').value = it.price;
+  document.getElementById('i_notes').value = it.notes;
+  document.getElementById('modalBackdrop').style.display = 'flex';
+  document.getElementById('modalSave').dataset.editId = id;
+}
+
+function closeModal(){ document.getElementById('modalBackdrop').style.display = 'none'; }
+
+function saveModal(){
+  const name = document.getElementById('i_name').value.trim();
+  const sku = document.getElementById('i_sku').value.trim();
+  const category = document.getElementById('i_category').value.trim();
+  const qty = Number(document.getElementById('i_qty').value) || 0;
+  const price = Number(document.getElementById('i_price').value) || 0;
+  const notes = document.getElementById('i_notes').value.trim();
+
+  if(!name){ alert('Please enter item name'); return; }
+
+  const editId = document.getElementById('modalSave').dataset.editId;
+  if(editId){
+    const idx = items.findIndex(x=>x.id===editId);
+    if(idx >= 0){
+      items[idx] = {...items[idx], name, sku, category, qty, price, notes};
+      save();
+    }
+  } else {
+    items.push({id:uid(), name, sku, category, qty, price, notes, created: Date.now()});
+    save();
+  }
+  closeModal();
+}
+
+function delItem(id){
+  if(!confirm('Delete this item?')) return;
+  items = items.filter(x=>x.id!==id);
+  if(selectedId === id) selectedId = null;
+  save();
+}
+
+function escapeHTML(s){ if(!s) return ''; return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function exportCSV(){
+  if(items.length === 0) return alert('No data to export');
+  const header = ['Name','SKU','Category','Qty','Unit Price','Notes'];
+  const rows = items.map(i => [i.name,i.sku,i.category,i.qty,Number(i.price).toFixed(2),i.notes||'']);
+  const csv = [header, ...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'inventory_export.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function wire(){
+  document.getElementById('openAdd').addEventListener('click', openAdd);
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalBackdrop').addEventListener('click', (e)=> { if(e.target === e.currentTarget) closeModal(); });
+  document.getElementById('modalSave').addEventListener('click', saveModal);
+  document.getElementById('seedData').addEventListener('click', ()=>{ if(confirm('Load sample items? This will replace current data.')) seedSample(); });
+  document.getElementById('search').addEventListener('input', ()=> { page = 1; render(); });
+  document.getElementById('filterCategory').addEventListener('change', ()=> { page = 1; render(); });
+  document.getElementById('sortBy').addEventListener('change', ()=> { page = 1; render(); });
+  document.getElementById('exportCsv').addEventListener('click', exportCSV);
+}
+
+window.onload = ()=>{ wire(); load(); };
+
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Samukelisiwe Ngema — IT Professional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:#0077b6;      /* deep blue */
+      --secondary:#00b4d8;    /* teal */
+      --accent:#90e0ef;       /* light teal */
+      --bg:#f8f9fa;
+      --card:#ffffff;
+      --text:#333333;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+    /* HERO */
+    .hero {
+      background:linear-gradient(135deg,var(--primary),var(--secondary));
+      color:#fff;
+      padding:60px 20px 60px;
+      text-align:center;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .hero .profile-photo {
+      width:150px;
+      height:150px;
+      border-radius:50%;
+      object-fit:cover;
+      border:4px solid #fff;
+      margin-bottom:15px;
+    }
+    .hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:10px}
+    .hero p{font-size:1.1rem;margin-bottom:20px}
+    .hero a.btn {
+      display:inline-block;
+      background:#fff;
+      color:var(--primary);
+      padding:12px 24px;
+      border-radius:30px;
+      text-decoration:none;
+      font-weight:600;
+      transition:background .3s,color .3s;
+    }
+    .hero a.btn:hover {
+      background:var(--accent);
+      color:#000;
+    }
+
+    .container{max-width:1100px;margin:auto;padding:40px 20px}
+    h2{color:var(--primary);margin-bottom:15px;font-size:1.8rem}
+
+    /* Cards grid */
+    .grid{display:grid;gap:20px}
+    .skills{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .card{
+      background:var(--card);
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.05);
+      transition:transform .3s, box-shadow .3s;
+    }
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    }
+    .card strong{display:block;margin-bottom:6px;color:var(--secondary)}
+
+    /* Timeline */
+    .timeline{border-left:4px solid var(--secondary);padding-left:20px}
+    .timeline .item{margin-bottom:20px}
+    .timeline h3{margin-bottom:4px;color:var(--primary)}
+
+    /* Two column grid for education/certs */
+    .edu-cert{grid-template-columns:1fr 1fr}
+    @media (max-width:720px){.edu-cert{grid-template-columns:1fr}}
+
+    /* Contact form */
+    .contact-form input,
+    .contact-form textarea {
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      margin-top:10px;
+      font-family:'Poppins',sans-serif;
+    }
+    .contact-form button {
+      margin-top:12px;
+      padding:12px 20px;
+      border-radius:30px;
+      border:none;
+      background:var(--primary);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition:background .3s;
+    }
+    .contact-form button:hover{background:var(--secondary)}
+
+    footer {
+      background:var(--primary);
+      color:#fff;
+      padding:20px;
+      text-align:center;
+      margin-top:40px;
+    }
+    footer a{color:#fff;text-decoration:underline}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- HERO SECTION WITH PHOTO -->
+  <section class="hero">
+    <img src="profile.jpg.jpeg" alt="Samukelisiwe Ngema" class="profile-photo">
+    <h1>Samukelisiwe Happiness Ngema</h1>
+    <p>IT Professional & Lecturer — Durban, South Africa</p>
+    <a href="Samukelisiwe_Ngema_CV_2025.pdf" class="btn" download>Download CV</a>
+  </section>
+
+  <main class="container">
+
+    <section>
+  <h2>Professional Summary</h2>
+  <p>
+    I am an innovative IT professional and lecturer with a strong record of delivering high-quality, scalable technology solutions. 
+    My expertise spans full-stack software development (C#, ASP.NET Core, HTML, CSS, SQL), cloud computing on Microsoft Azure, and the 
+    complete Software Development Life Cycle (SDLC). I combine deep technical skills with Agile project management, business analysis, 
+    and data-driven decision-making to improve processes and achieve measurable results. Recognized for leadership, mentorship, and a 
+    commitment to continuous learning, I thrive in dynamic, evolving technology environments.
+  </p>
+</section>
+    <section>
+      <h2>Core Skills</h2>
+      <div class="grid skills">
+        <div class="card"><strong>Programming</strong>C#, ASP.NET Core, HTML, CSS, SQL, PostgreSQL, APIs</div>
+        <div class="card"><strong>Project Management</strong>Agile/Scrum, Jira, Confluence, KPIs, ERP</div>
+        <div class="card"><strong>Cloud & Infrastructure</strong>Microsoft Azure, Microsoft 365, DevOps, Deployment</div>
+        <div class="card"><strong>Data & Security</strong>Database Management, Cybersecurity, Data Analysis</div>
+        <div class="card"><strong>Soft Skills</strong>Leadership, Time Management, Adaptability</div>
+        <div class="card">
+      <strong>Research & Analytical Skills</strong>
+      <p>Conducting in-depth research and requirements analysis, evaluating emerging technologies, and applying evidence-based findings to improve systems and curricula.</p>
+    </div>
+      </div>
+    </section>
+
+    <section>
+<h2>Professional Experience</h2>
+<div class="card timeline">
+
+  <div class="item">
+    <h3>Lecturer – Eduvos Umhlanga <span>(Oct 2024 – Present)</span></h3>
+    <p>Lecturing in Programming (C# & Java), Software Design and Analysis, Project Management, ERP Systems, and Cloud Computing.</p>
+  </div>
+
+  <div class="item">
+    <h3>Software Developer / Business Analyst / Project Management Intern – Mercedes-Benz SA <span>(Jul 2023 – Oct 2024)</span></h3>
+    <p>Worked with C# and ASP.NET Core to develop dashboards, followed Agile/Scrum practices, and contributed to technical documentation and stakeholder requirements gathering.</p>
+  </div>
+
+  <div class="item">
+    <h3>Lecturer (Contract) – Rosebank College <span>(Oct 2022 – Dec 2023)</span></h3>
+    <p>Taught programming (C#, ASP.NET Core), guided students on Agile methodologies, and assisted with project documentation and software development practices.</p>
+  </div>
+
+  <div class="item">
+    <h3>Internships</h3>
+
+    <div class="internship">
+      <strong>DUT App Factory – Software Developer</strong> <span class="date">(2021)</span>
+      <p>Worked on mobile app development projects using Agile methodologies. Participated in UI/UX design, debugging, and sprint planning.</p>
+    </div>
+
+    <div class="internship">
+      <strong>Altron Bytes – Cybersecurity Intern</strong> <span class="date">(2022)</span>
+      <p>Gained hands-on experience in cybersecurity fundamentals, IT support, and systems integration within enterprise environments.</p>
+    </div>
+
+    <div class="internship">
+      <strong>Netcampus – Software Asset Management Intern</strong> <span class="date">(2023)</span>
+      <p>Assisted in tracking and optimizing software assets, ensuring license compliance, and working with SAM tools such as SCCM and Lansweeper to support audit readiness and cost control.</p>
+    </div>
+  </div>
+
+    </section>
+
+    <section>
+      <h2>Education & Certifications</h2>
+      <div class="grid edu-cert">
+        <div class="card">
+          <strong>Durban University of Technology</strong>
+      <ul>
+        <li>Master of Information and Communication Technology <em>(In Progress, Graduation: 2026)</em></li>
+        <li>Bachelor of Information and Communication Technology Honours</li>
+        <li>Advanced Diploma in Information and Communication Technology</li>
+        <li>Diploma in Applications Development in Information and Communication Technology</li>
+      </ul>
+        </div>
+        <div class="card">
+          <strong>Certifications</strong>
+        <ul>
+          <li>PL-900: Microsoft Certified: Power Platform Fundamentals </li>
+          <li>AZ-900: Microsoft Certified: Azure Fundamentals </li>
+          <li>MS-900: Microsoft Certified: Microdoft Fundamentals</li> 
+          <li>CompTIA Security+</li>
+          <li>AgilePM</li> 
+        </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Volunteer Work</h2>
+      Mercedes Benz Employee Volunteer Program — fundraising and donation drives for disadvantaged schools and shelters.
+    </section>
+
+    <section>
+  <h2>Project</h2>
+  <div class="grid skills">
+    
+  <div class="card">
+  <strong>ERP Module Mock-up — Inventory</strong>
+  <p>A responsive ERP inventory module mock-up demonstrating CRUD operations, search, sorting, and CSV export. Built as a front-end prototype to showcase system design and user flows.</p>
+  <p><em>Tech:</em> HTML, CSS, JavaScript (localStorage demo)</p>
+  <a href="erp-module.html" style="color:var(--secondary);text-decoration:underline">Open demo</a> ·
+  <a href="https://github.com/YOUR_GITHUB/erp-module" style="color:var(--secondary);text-decoration:underline">View code</a>
+</div>
+ 
+</section>
+    <section class="card">
+      <h2>Contact Me</h2>
+      <form class="contact-form" action="https://formspree.io/f/mgvnevyo" method="POST">
+        <input type="text" name="name" placeholder="Your name">
+        <input type="email" name="email" placeholder="Your email">
+        <textarea name="message" rows="5" placeholder="Your message"></textarea><input type="hidden" name="_subject" value="New message from website contact form">
+        <button type="submit">Send Message</button>
+      </form>
+      <p style="font-size:0.9rem;margin-top:6px;color:#666"></p>
+    </section>
+
+  </main>
+
+   <footer>
+    <div>&copy; 2025 Samukelisiwe Ngema</div>
+    <div class="contact-links">
+      <a href="mailto:samukelisiwehappy@gmail.com">📧 Email: samukelisiwehappy@gmail.com</a>
+      <a href="tel:0825414675">📱 Call: 082 541 4675</a>
+      <a href="https://www.linkedin.com/in/samukelisiwe-ngema-44b415190" target="_blank">🔗 LinkedIn Profile</a>
+    </div>
+  </footer>
+</body>
+</html>
